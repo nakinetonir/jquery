@@ -1,0 +1,35 @@
+select {
+	font-family : inherit;
+	font-size   : 100%;
+	width : 150px;
+	margin: 0;
+   -webkit-box-sizing: border-box; 
+	-moz-box-sizing: border-box; 
+	box-sizing: border-box;
+}
+
+form {
+	position: relative;
+	width  : 740px;
+	height : 498px;
+	margin : 0 auto;
+}
+
+
+label {
+  font : .8em "typewriter", sans-serif;
+}
+
+
+input {
+  font    : .9em/1.5em "handwriting", sans-serif;
+
+  padding : 0 10px;
+  margin  : 0;
+  width   : 240px;
+
+  background: none;
+}
+
+
+

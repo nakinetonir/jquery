@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Motrar datos de cliente Hipercor</title>
+	<meta charset="utf-8" />
+	<script>
+		src="https://code.jquery.com/jquery-3.2.1.js"
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+	</head>
+<body>
+	<a id="logout" href="http://localhost:3000/borrarcookie">logout</a>
+	<div id="user">
+		
+	</div>
+	<div style="float:left">
+		<img src="./imagenes/data.jpg"/>
+	</div>
+	<div id="datoscliente" style=" position: absolute;
+  top:  50px; 
+  left: 600px;">
+	
+	</div>
+</body>
+<script>
+	$('document').ready(function()
+		{
+			var email="";
+			window.indexedDB.open("Hipercor").addEventListener("success",function(){
+				this.result.transaction("Cliente","readonly").objectStore("Cliente").index("email").openCursor().onsuccess=function(ev){ 
+					var cursor=ev.target.result;
+					if(cursor) { 
+							cliente=cursor.value;
+							for (propiedad in cliente) {
+								if (propiedad=='email')
+								{
+									email = cliente[propiedad];
+									conectado(email,cliente); //filta datos por email para mostrar datos de cliente.
+								}
+								}
+					}
+				}
+			});
+		}
+	);
+	$('#logout').click(function(){
+		$.ajax(
+				{
+					url: 'http://localhost:3000/borrarcookie',
+					type : 'GET',
+					data : {
+						email : email
+					}, //logut. borrar cookie en server, en sessionstorage y borrar indexdb del lado cliente.
+					success : function(response) 
+					{
+						if(response!=null)
+						{
+							window.sessionStorage.removeItem(email);
+							window.indexedDB.deleteDatabase("Hipercor");
+						}
+					}
+				}
+			)
+	});
+	function conectado(email)
+	{
+		$.ajax(
+				{
+					url: 'http://localhost:3000/conectado',
+					type : 'GET',
+					data : {
+						email : email
+					},//por get obtienes los datos del correo del cliente.
+					success : function(response) 
+					{
+						if(response=='s')
+						datoscliente(email,cliente);
+					}
+				}
+			);
+	}
+	function datoscliente(email,cliente)
+	{
+		$('#user').append('<p>').text("Conectado: "+email);
+		var espacio=$('<br>');
+		espacio.appendTo('#user');
+		var parrafo = $('<p></p>').text('-----------------------------------------------');
+		parrafo.appendTo('#datoscliente');
+		var parrafo = $('<p></p>').text('Datos del cliente');
+		parrafo.appendTo('#datoscliente');
+		var parrafo = $('<p></p>').text('-----------------------------------------------');//muestras datos del cliente obtenidos por mail en indexeddb.
+		parrafo.appendTo('#datoscliente');
+		for (propiedad in cliente)
+		{
+			switch(propiedad)
+			{
+				case "email":
+					var parrafo = $('<p></p>').text('Datos de identificacion');
+					parrafo.appendTo('#datoscliente');
+					var parrafo = $('<p></p>').text('-----------------------------------------------');
+					parrafo.appendTo('#datoscliente');
+					break;
+				case "nombre":
+					var parrafo = $('<p></p>').text('Datos personaes');
+					parrafo.appendTo('#datoscliente');
+					var parrafo = $('<p></p>').text('-----------------------------------------------');
+					parrafo.appendTo('#datoscliente');
+					break;
+				case "pais":
+					var parrafo = $('<p></p>').text('Datos de dirección');
+					parrafo.appendTo('#datoscliente');
+					var parrafo = $('<p></p>').text('-----------------------------------------------');
+					parrafo.appendTo('#datoscliente');
+					break;
+			}
+			var parrafo = $('<p></p>').text(propiedad+": "+cliente[propiedad]);
+			parrafo.appendTo('#datoscliente');
+		}
+	}
+</script>
+</html>

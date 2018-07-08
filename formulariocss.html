@@ -1,0 +1,304 @@
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<script src="https://code.jquery.com/jquery-3.2.1.js"
+integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="form.css"> 
+		</head>
+  <body>
+  <div>
+        <div>
+			<img src="./imagenes/comprar.jpg"/>
+            <h3>Datos del cliente > ficha completa</h3>
+        </div>
+        
+  </div>
+  <form   id="hipercor" method="post">
+	<legend>Datos de identifiación</legend>
+	<label for="Email">Email: </label><input type="text" id="Email" name="Email"/><td>
+	<label for="Password">Password:</label><input type="text" id="Password" name="Password"></td>
+	<label for="Conpassword">Confirma Password:</label><input type="text" id="Conpassword" name="Conpassword"></td>
+	<legend>Datos Personales</legend>
+	<label for="Nombre" class="personal form-control">Nombre</label><input type="text" id="Nombre" name="Nombre"/><td>
+	<label for="Apellidos">Apellidos</label><input type="text" id="Apellido" name="Apellido"/></td>
+	<label for="Sexo">Sexo: </label>
+				Hombre<input type="radio" id="Sexo" value="Hombre" name="sexo">     
+				Mujer <input type="radio" id="Sexo" value="Mujer" name="sexo"></td>
+	<select id="Dia" name="Dia" class="form-control">    
+						<option value="default" selected="selected">Selecciona día</option>
+	</select>
+	<select id="Mes" name="Mes" class="form-control">    
+			<option value="default" selected="selected">Selecciona mes</option>
+	</select>
+	<select id="Año" name="Año" class="form-control">    
+			<option value="default" selected="selected">Selecciona año</option>
+	</select>
+	<label for="NIF" >NIF</label><input type="text" id="NIF" name="nif"/>
+	<legend>Dirección</legend>
+	<label for="Pais" >Pais:</label><input type="text" id="Pais" name="Pais"/>
+	<select id="Provincias" name="Provin" class="form-control">    
+			<option value="default" selected="selected">Selecciona provincia</option>
+	</select>
+	<select id="Municipios" name="Muni" class="form-control">    
+			<option value="default" selected="selected">Selecciona municipio</option>
+	</select>
+	<select id="Calle" name="Callejero">    
+			<option value="default" selected="selected">Selecciona calle</option>
+	</select>
+	<label for="CodigoPostal">Codigo postal: </label><input type="text" id="CodigoPostal" name="CodigoPostal"/>
+	<label for="Telefono">Telefono: </label><input type="text" id="Telefono" name="Telefono"/>
+	<label for="Tarjeta">¿Tiene nuestra tarjeta?: </label>Si 
+	<input type="radio" id="Tarjeta" value="Si" name="tarjeta"> No    
+	<input type="radio" id="Tarjeta" value="No" name="tarjeta">
+	<label for="Publicidad">¿Quiere publicidad?: </label> Si 
+	<input type="radio" id="Publicidad" value="Si" name="Publicidad">No   
+	<input type="radio" id="Publicidad" value="No" name="Publicidad"> 
+	<button type="submit" id="btnRegistro" value="REGISTRAR">Registrar</button>
+</form>
+<script>
+  $('document').ready(function()
+	{
+			cargarfecha();
+			cargardireccion();
+	});
+$('#btnRegistro').click(function(event)
+	{
+		if($('#Password').val()==$('#Conpassword').val())
+		{
+			registro();
+			$('#hipercor').validate(
+				{
+					bebug: true,
+					rules:
+					{
+						Email:{required: true, email: true},
+						Password:{required: true, minlength : 6, maxlength: 15},
+						Conpassword:{required: true},
+						Nombre:{required: true},
+						Apellido:{required: true},
+						NIF:{required: true},
+						Pais:{required: true},
+						CodigPostal:{required: true, digits: true},
+						Telefono:{required: true, exactlength : 9 ,digits: true},
+					},
+					messages :                  //Validacion con Jquery validator de los campos text.
+					{
+						Email: {
+							required: "Introducir email obligatorio",
+							email : "El formato del email es incorrecto"
+						},
+						Password: {
+							required: "Introducir contraseña obligatorio",
+							password : "El formato de la contraseña es incorrecto"
+						},
+						Nombre: {
+							required: "Introducir nombre obligatorio",
+							nombre : "El formato del nombre es incorrecto"
+						},
+						Apellido: {
+							required: "Introducir apellidos obligatorio",
+						},
+						NIF: {
+							required: "Introducir nif obligatorio",
+							nif : "El formato del nif es incorrecto"
+						},
+						Pais: {
+							required: "Introducir pais obligatorio",
+							Pais : "El formato del pais es incorrecto"
+						},
+						CodigoPostal: {
+							required: "Introducir el codigo postal obligatorio",
+							CodigoPostal : "El formato del codigo postal es incorrecto"
+						},
+						Telefono: {
+							required: "Introducir telefono obligatorio",
+							Telefono: "El formato del telefono es incorrecto"
+						}
+					}
+				}
+			)
+		}
+		else
+		{
+			alert("Contraseña y confirmar contraseña deben concidir");
+		}
+	});
+	function registro()
+	{
+		var Email = $('#Email').val();
+		var Password = $('#Password').val();
+		var Conpassword = $('#Conpassword').val();
+		var Nombre = $('#Nombre').val();
+		var Apellido = $('#Apellido').val();
+		var Sexo = $('#Sexo').val();
+		var Dia = $('#Dia').val();
+		var Mes = $('#Mes').val();
+		var Año = $('#Año').val();
+		var NIF = $('#NIF').val();
+		var Pais = $('#Pais').val();                    //petición ajax al server para alamenar con body.parse y schema en express los datos
+		var Provincia = $('#Provincias').val();			//del form
+		var Municipio = $('#Municipios').val();
+		var Calle = $('#Calle').val();
+		var CodigoPostal = $('#CodigoPostal').val();
+		var Telefono = $('#Telefono').val();
+		var Tarjeta = $('#Tarjeta').val();
+		var Publicidad = $('#Publicidad').val();
+		event.preventDefault();
+		$.ajax(
+			{
+				url: 'http://localhost:3000/registro',
+				type : 'POST',
+				data : {
+					Email : Email,
+					Password : Password,
+					Conpassword : Conpassword,
+					Nombre : Nombre,
+					Apellido : Apellido,
+					Sexo : Sexo,
+					Dia : Dia,
+					Mes : Mes,
+					Año : Año,
+					NIF : NIF,
+					Pais : Pais,
+					Provincia : Provincia,
+					Municipio : Municipio,
+					Calle : Calle,
+					CodigoPostal: CodigoPostal,
+					Telefono : Telefono,
+					Tarjeta: Tarjeta,
+					Publicidad : Publicidad
+				},
+				success : function(response) 
+				{
+					$(location).attr('href','login.html');
+				}
+			}
+		);
+	}
+	function cargardia(mes)
+	{
+		for(var x=1; x<=mes; x++)
+		{
+			$('#Dia').append($('<option>', { 'value' : x }).text(x));
+		}
+	}
+    function cargarfecha()
+	{
+		var meses=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+		var diasmes=[31,28,31,30,31,31,30,31,30,31,30,31];
+		var desplegablemes=document.getElementById("Mes");
+		meses.forEach(function(el,pos,arr)
+		{
+			if(el!=null)
+			{
+					$('#Mes').append($('<option>', { 'value' : el }).text(el));
+			}
+		});
+		$('#Mes').change(function()
+		{
+			var mes = $("select[name=Mes]").val(); //para cargar dia con jquery
+			meses.forEach(function(el,pos,arr){ 
+				if(mes==el)
+				{
+					cargardia(diasmes[pos]);
+				}
+			});
+		});
+		for(var y=1920;y<=(f = new Date()).getFullYear();y++)
+		{
+			if(y!=null)
+			{
+				$('#Año').append($('<option>', { 'value' : y }).text(y));
+			}
+		}
+	}  
+	function cargardireccion()
+	{
+		hacerPetAjax("codciu.txt");
+		$('#Provincias').change(function()
+		{
+			$('#Municipios').empty()
+			var pro = $("select[name=Provin]").val();
+			hacerPetAjax2("codciu.txt",pro.split('x')[0]);
+			$('#Municipios').change(function()              //para cargar direccion mediante envio de ficheros en express
+			{
+				$('#Calle').empty()
+				var muni = $("select[name=Muni]").val();
+				hacerPetAjax3(muni.substr(0, 3)+"codpos.txt",muni.substr(0, 3));
+				$('#Calle').change(function()
+				{
+					var calle = $("select[name=Callejero]").val();
+					$('#CodigoPostal').val(calle.substr(0,5));
+			});
+			});
+		});
+	}
+	function hacerPetAjax(archivo)
+		{
+			$.ajax(
+				{
+					url: 'http://localhost:3000/ficheros',
+					type : 'GET',
+					data : {
+						archivo : archivo
+					},
+					success : function(response) 
+					{
+						var provincias;
+						response.split('\n').forEach(function(fila){
+										if(fila.includes("x"))   //tres peticiones para archivos disintos.
+										{
+											$('#Provincias').append($('<option>', { 'value' : fila }).text(fila.split('x')[1]));
+										}
+										});
+					}
+				}
+			);
+		}
+	function hacerPetAjax2(archivo,codprovincia)
+		{
+			$.ajax(
+				{
+					url: 'http://localhost:3000/ficheros',
+					type : 'GET',
+					data : {
+						archivo : archivo
+					},
+					success : function(response) 
+					{
+						response.split('\n').forEach(function(fila){
+							if(fila.startsWith(codprovincia))
+							{
+								$('#Municipios').append($('<option>', { 'value' : fila }).text(fila.substr(3, fila.length)));
+							}
+							});
+					}
+				}
+			);
+		}
+		function hacerPetAjax3(archivo)
+		{
+			$.ajax(
+				{
+					url: 'http://localhost:3000/ficheros',
+					type : 'GET',
+					data : {
+						archivo : archivo
+					},
+					success : function(response) 
+					{
+						response.split('\n').forEach(function(fila){
+								$('#Calle').append($('<option>', { 'value' : fila }).text(fila.substr(6, fila.length)));		
+						});
+					}
+				}
+			);
+		}
+</script>
+  </body>
+</html>
+
+

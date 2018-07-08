@@ -1,0 +1,170 @@
+<html lang="es">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Logear datos cliente Hipercor</title>
+	<script
+		src="https://code.jquery.com/jquery-3.2.1.js"
+	</script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+   <link rel="stylesheet" type="text/css" href="form.css"> 
+     </head>
+  <body>
+   <div>
+		<img src="./imagenes/comprar.jpg"/>
+           <h1>Identificacion</h1>
+   </div>
+   
+  <form method="post">
+			<div id="fallo">
+   
+			</div>
+			<div>
+				<label for="Email">Email: </label><input type="text" id="email" name="email"/>
+				<label for="Password ">Password:</label><input type="text" id="password" name="password"/>
+				<button id="submit" value="Login" name="submit">Logear</button>
+			</div>
+			<div>
+				<h3>Nuevo Cliente</h3>
+				<button id="registro" name="reg">Continuar</button>
+			</div>
+	</form>
+	<script>
+		$(document).ready(function(event)
+			{
+				var pedirdb=window.indexedDB.open("Hipercor",1);
+				pedirdb.addEventListener("upgradeneeded",function()
+				{
+					var db=this.result;
+					var Identifiacion=db.createObjectStore("Cliente", { "autoIncrement": false, "keyPath": "email" });
+					Identifiacion.createIndex("email","email",{"unique":true});
+					Identifiacion.createIndex("password","password",{"unique":false});
+					Identifiacion.createIndex("conpassword","conpassword",{"unique":false});
+					Identifiacion.createIndex("nombre","nombre",{"unique":false});
+					Identifiacion.createIndex("apellido","apellido",{"unique":false});
+					Identifiacion.createIndex("sexo","sexo",{"unique":false});
+					Identifiacion.createIndex("dia","dia",{"unique":true});
+					Identifiacion.createIndex("mes","mes",{"unique":false}); //crear indexed database
+					Identifiacion.createIndex("año","año",{"unique":false});
+					Identifiacion.createIndex("nif","nif",{"unique":false});
+					Identifiacion.createIndex("pais","pais",{"unique":false});
+					Identifiacion.createIndex("provincia","provincia",{"unique":false});
+					Identifiacion.createIndex("municipio","municipio",{"unique":false});
+					Identifiacion.createIndex("calle","calle",{"unique":false});
+					Identifiacion.createIndex("codigopostal","codigopostal",{"unique":false});
+					Identifiacion.createIndex("telefono","telefono",{"unique":false});
+					Identifiacion.createIndex("tarjeta","tarjeta",{"unique":false});
+					Identifiacion.createIndex("publicidad","publicidad",{"unique":false});
+				});
+			}
+		);
+		$('#registro').click(function()
+			{
+				window.location.href='formulariocss.html'; //redireccion a registro...0_o no me funciona o_0
+			}
+		);
+		$('#email').blur(function()
+		{
+			var email = $('#email').val();
+			$.ajax(
+				{
+					url: 'http://localhost:3000/password',
+					type : 'GET',
+					data : {
+						email : email
+					},  //obtener password de server tras blur con mail correcto
+					success : function(response) 
+					{
+						res = JSON.parse(response)
+						if(res==null)
+						{
+							fallo('incorrectos');
+						}
+						else
+						{
+							$('#password').val(res.conpassword);
+						}
+					}
+				}
+			);
+		});
+		$('#submit').click(function(event)
+		{
+			var email = $('#email').val();
+			var password = $('#password').val();
+			if(email!="" && password!="")
+			{
+				event.preventDefault(); //envio de login ok
+					$.ajax(
+						{
+							url: 'http://localhost:3000/login',
+							type : 'POST',
+							data : {
+								email : email,
+								password : password
+							},
+							success : function(response) 
+							{
+								if(JSON.parse(response)!=null)
+								{
+									cargardatosindex(JSON.parse(response));
+								}
+								else
+								{
+									fallo('incorrectos');
+								}
+							}
+						}
+					);
+			}
+			else
+			{
+				fallo("Vacios");
+			}
+		});
+	function fallo(datos)
+	{
+		$('#fallo').empty();
+		var h2 = $('<p style="color:red">Email o contraseña '+datos+'</p>');//para gestionar falor de logeo o mail
+		h2.appendTo('#fallo');
+	}
+	function cargardatosindex(datos)
+	{
+		window.indexedDB.open("Hipercor",1).addEventListener("success", function()
+		{
+			var database = this.result;
+			var cliente = database.transaction(["Cliente"],"readwrite");
+			cliente.objectStore("Cliente").add(
+			{
+				email : datos.email,
+				password : datos.password,
+				conpassword : datos.conpassword,
+				nombre : datos.nombre,
+				apellido : datos.apellido,
+				sexo : datos.sexo,
+				dia : datos.dia,
+				mes : datos.mes,//carga de datos en indexed tras login enviados por server
+				año : datos.año,
+				nif: datos.nif,
+				pais: datos.pais,
+				provincia: datos.provincia,
+				municipio: datos.municipio,
+				calle : datos.calle,
+				codigopostal : datos.codpostal,
+				telefono: datos.telefono,
+				tarjeta: datos.tarjeta,
+				publicidad: datos.publicidad
+			}
+			);
+			cliente.addEventListener("complete", function()
+			{
+				sessionStorage.setItem(datos.email,datos._id);//si ok redirige 0-o funciona a mostradatos y crea en sessionstorage cookie con id de inserccion de registro.
+				$(location).attr('href','mostrardatos.html');
+			}
+			);
+		});
+	}
+	</script>
+</body>
+</html>
